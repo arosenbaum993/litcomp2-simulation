@@ -1,0 +1,2580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lit & Comp II · Georgia Milestones Practice Simulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --navy: #0f2a4a;
+  --navy-mid: #1a3a60;
+  --navy-light: #2a4a6a;
+  --blue: #1a4e8a;
+  --blue-soft: #dce8f5;
+  --blue-bright: #7ab0e8;
+  --cream: #f7f3ee;
+  --cream-dark: #ede7de;
+  --cream-border: #d8cfc5;
+  --ink: #1a1410;
+  --ink-soft: #4a403a;
+  --ink-faint: #8a7e78;
+  --gold: #c4960a;
+  --gold-soft: #fdf3d0;
+  --green: #1a6b3a;
+  --green-soft: #d4ecde;
+  --red: #8a1a1a;
+  --red-soft: #f5dcdc;
+  --teal: #1a6b6b;
+  --teal-soft: #d4ecea;
+  --orange: #c45a0a;
+  --orange-soft: #fde8d0;
+  --vocab-flag: #7b2fa0;
+  --vocab-soft: #f0e4f8;
+  --white: #ffffff;
+  --shadow: 0 2px 12px rgba(15,42,74,0.12);
+  --shadow-lg: 0 8px 32px rgba(15,42,74,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--cream); font-family: 'DM Sans', sans-serif; color: var(--ink); min-height: 100vh; }
+
+/* ── SCREENS ── */
+.screen { display: none; min-height: 100vh; }
+.screen.active { display: block; }
+
+/* ── REGISTRATION SCREEN ── */
+#screen-register {
+  background: var(--navy);
+  padding: 40px 20px;
+}
+#screen-register.active { display: flex; align-items: center; justify-content: center; }
+
+.register-card {
+  background: white;
+  border-radius: 16px;
+  padding: 48px 52px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+.register-logo {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 32px;
+}
+.register-logo-badge {
+  width: 48px; height: 48px;
+  background: var(--navy);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px;
+}
+.register-logo-text {
+  display: flex; flex-direction: column;
+}
+.register-logo-text .eyebrow {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue); font-family: 'DM Mono', monospace; font-weight: 600;
+}
+.register-logo-text .brand {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.1rem; font-weight: 700; color: var(--ink);
+  line-height: 1.2;
+}
+.register-card h2 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.6rem; color: var(--navy);
+  margin-bottom: 6px;
+}
+.register-card .subtitle {
+  font-size: 13.5px; color: var(--ink-soft);
+  margin-bottom: 32px; line-height: 1.5;
+}
+.form-group { margin-bottom: 20px; }
+.form-group label {
+  display: block;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--ink-soft);
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 8px;
+}
+.form-group input, .form-group select {
+  width: 100%;
+  border: 1.5px solid var(--cream-border);
+  border-radius: 8px;
+  padding: 13px 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  color: var(--ink);
+  background: var(--cream);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus, .form-group select:focus {
+  border-color: var(--blue);
+  background: white;
+}
+.btn-start {
+  width: 100%;
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 16px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 16px; font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+  margin-top: 8px;
+}
+.btn-start:hover { background: var(--blue); }
+.btn-start:active { transform: scale(0.99); }
+
+.register-info {
+  margin-top: 24px;
+  background: var(--blue-soft);
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 12.5px;
+  color: var(--blue);
+  line-height: 1.6;
+}
+.register-info strong { display: block; margin-bottom: 4px; }
+
+/* ── SIMULATION SCREEN ── */
+#screen-sim { background: var(--cream); }
+
+.sim-header {
+  background: var(--navy);
+  color: white;
+  padding: 0 32px;
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 3px solid var(--blue);
+}
+.sim-header-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 0;
+  gap: 16px;
+}
+.sim-header-left { display: flex; align-items: center; gap: 16px; }
+.sim-brand {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1rem; font-weight: 700; color: var(--cream);
+}
+.sim-sub { font-size: 11px; color: #7ab0e8; font-family: 'DM Mono', monospace; letter-spacing: 1px; }
+.sim-student-pill {
+  background: rgba(122,176,232,0.15);
+  border: 1px solid rgba(122,176,232,0.3);
+  border-radius: 20px;
+  padding: 5px 14px;
+  font-size: 12px; color: #a0c4e8;
+  font-weight: 500;
+}
+.sim-progress-bar-wrap {
+  padding: 10px 0 14px;
+  display: flex; align-items: center; gap: 14px;
+}
+.sim-progress-track {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.sim-progress-fill {
+  height: 100%;
+  background: var(--blue-bright);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+  width: 0%;
+}
+.sim-progress-label {
+  font-size: 11px; color: #7ab0e8;
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap; min-width: 80px; text-align: right;
+}
+.sim-timer-save {
+  display: flex; align-items: center; gap: 10px;
+}
+.timer-display {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; color: #7ab0e8;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(122,176,232,0.2);
+  border-radius: 6px;
+  padding: 5px 12px;
+}
+.btn-save-later {
+  background: transparent;
+  border: 1px solid rgba(122,176,232,0.4);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 11.5px; color: #7ab0e8;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+.btn-save-later:hover { background: rgba(122,176,232,0.12); color: #c8dff5; }
+
+/* ── MAIN SIM CONTENT ── */
+.sim-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: calc(100vh - 110px);
+  overflow: hidden;
+}
+.passage-panel {
+  background: white;
+  border-right: 2px solid var(--cream-border);
+  overflow-y: auto;
+  padding: 28px 32px 40px;
+  height: 100%;
+}
+.passage-panel-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.passage-panel-label::after { content: ''; flex: 1; height: 1px; background: var(--cream-border); }
+.question-panel {
+  background: var(--cream);
+  overflow-y: auto;
+  padding: 28px 32px 40px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.question-panel-inner { flex: 1; }
+.qnav-bar {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 16px 0 0;
+  border-top: 1px solid var(--cream-border);
+  margin-top: 24px;
+  flex-shrink: 0;
+}
+.qnav-btn {
+  background: white;
+  border: 1.5px solid var(--cream-border);
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.qnav-btn:hover:not(:disabled) { border-color: var(--blue); color: var(--blue); background: var(--blue-soft); }
+.qnav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.qnav-btn.primary { background: var(--navy); border-color: var(--navy); color: white; }
+.qnav-btn.primary:hover:not(:disabled) { background: var(--blue); border-color: var(--blue); }
+.qnav-dots { display: flex; align-items: center; gap: 5px; flex-wrap: wrap; justify-content: center; max-width: 320px; }
+.qnav-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--cream-border); cursor: pointer;
+  transition: all 0.15s; border: 1.5px solid transparent;
+}
+.qnav-dot.answered { background: var(--blue); }
+.qnav-dot.flagged { background: var(--vocab-flag); }
+.qnav-dot.current { border-color: var(--navy); transform: scale(1.3); }
+.qnav-dot.writing-dot { background: var(--gold); border-radius: 3px; }
+.writing-full-panel { max-width: 1100px; margin: 0 auto; padding: 28px 32px 60px; width: 100%; }
+.sim-main.writing-mode { display: block; height: auto; overflow: visible; }
+@media (max-width: 760px) {
+  .sim-main { grid-template-columns: 1fr; height: auto; overflow: visible; }
+  .passage-panel { height: auto; border-right: none; border-bottom: 2px solid var(--cream-border); max-height: 45vh; overflow-y: auto; }
+  .question-panel { height: auto; }
+}
+
+/* Passage block */
+.passage-block {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 10px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow);
+}
+.passage-label {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--ink-faint); font-family: 'DM Mono', monospace;
+  margin-bottom: 10px; font-weight: 600;
+}
+.passage-title {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--navy); margin-bottom: 6px;
+}
+.passage-meta {
+  font-size: 12px; color: var(--ink-faint); font-style: italic;
+  margin-bottom: 16px;
+}
+.passage-body {
+  font-size: 14.5px; line-height: 1.75;
+  color: var(--ink);
+}
+.passage-body p { margin-bottom: 12px; }
+.passage-body p:last-child { margin-bottom: 0; }
+.passage-body .para-num {
+  display: inline-block; width: 22px;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; color: var(--ink-faint);
+  vertical-align: top; margin-top: 3px;
+  margin-right: 4px; flex-shrink: 0;
+}
+.para-wrap { display: flex; margin-bottom: 12px; }
+.para-wrap:last-child { margin-bottom: 0; }
+.para-text { flex: 1; font-size: 14.5px; line-height: 1.75; }
+
+/* Question cards */
+.question-card {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 10px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.question-card.answered { border-color: #b0d4b0; }
+.question-card.vocab-flagged { border-color: var(--vocab-flag); }
+.question-card.answered.vocab-flagged { border-color: var(--vocab-flag); }
+
+.question-header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--cream-border);
+  gap: 12px;
+}
+.question-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.q-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-radius: 4px;
+  padding: 2px 8px;
+}
+.q-badge {
+  font-size: 10px; font-weight: 600;
+  border-radius: 4px; padding: 2px 7px;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+.q-badge-type { background: #ede8f5; color: #5a3a8a; }
+.q-badge-dok { background: var(--cream-dark); color: var(--ink-soft); }
+.q-badge-standard { background: var(--blue-soft); color: var(--blue); }
+.q-badge-answered { background: var(--green-soft); color: var(--green); }
+.q-badge-vocab { background: var(--vocab-soft); color: var(--vocab-flag); }
+
+.vocab-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: transparent;
+  border: 1px solid var(--cream-border);
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 11px; color: var(--ink-faint);
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.vocab-btn:hover { border-color: var(--vocab-flag); color: var(--vocab-flag); }
+.vocab-btn.active {
+  background: var(--vocab-soft);
+  border-color: var(--vocab-flag);
+  color: var(--vocab-flag);
+  font-weight: 600;
+}
+.vocab-btn .flag-icon { font-size: 13px; }
+
+.question-body { padding: 16px 20px 20px; }
+.question-stem {
+  font-size: 15px; line-height: 1.65;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+.question-stem strong { font-weight: 700; }
+
+/* Selected Response */
+.options-list { display: flex; flex-direction: column; gap: 8px; }
+.option-item {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 11px 14px;
+  border: 1.5px solid var(--cream-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s;
+  background: white;
+}
+.option-item:hover { border-color: var(--blue); background: #f0f5ff; }
+.option-item.selected {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+.option-letter {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px; font-weight: 600;
+  color: var(--blue);
+  background: var(--blue-soft);
+  border-radius: 4px;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.option-item.selected .option-letter {
+  background: var(--blue);
+  color: white;
+}
+.option-text { font-size: 14px; line-height: 1.55; color: var(--ink); padding-top: 2px; }
+
+/* Multi-select */
+.multi-select-hint {
+  font-size: 12px; color: var(--ink-faint); font-style: italic;
+  margin-bottom: 12px;
+}
+.multi-option { cursor: pointer; }
+.multi-option .option-letter {
+  background: var(--cream-dark); color: var(--ink-soft);
+  border-radius: 4px; font-size: 11px;
+}
+.multi-option.selected {
+  border-color: var(--teal);
+  background: var(--teal-soft);
+}
+.multi-option.selected .option-letter { background: var(--teal); color: white; }
+.multi-option:hover { border-color: var(--teal); background: #f0f9f8; }
+
+/* Drag and Drop */
+.drag-instructions {
+  font-size: 12px; color: var(--ink-faint); font-style: italic;
+  margin-bottom: 14px;
+}
+.drag-zone-wrap {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 14px;
+}
+@media (max-width: 600px) { .drag-zone-wrap { grid-template-columns: 1fr; } }
+
+.drag-zone {
+  border: 2px dashed var(--cream-border);
+  border-radius: 8px;
+  min-height: 100px;
+  padding: 12px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.drag-zone.drag-over { border-color: var(--blue); background: #f0f5ff; }
+.drag-zone-label {
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; font-weight: 600;
+  color: var(--ink-faint); margin-bottom: 10px;
+}
+.drag-bank {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  padding: 12px;
+  background: var(--cream);
+  border-radius: 8px;
+  border: 1px solid var(--cream-border);
+  min-height: 56px;
+}
+.drag-chip {
+  background: white;
+  border: 1.5px solid var(--cream-border);
+  border-radius: 6px;
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: grab;
+  transition: all 0.15s;
+  user-select: none;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.drag-chip:hover { border-color: var(--blue); box-shadow: 0 2px 8px rgba(26,78,138,0.15); }
+.drag-chip.dragging { opacity: 0.4; cursor: grabbing; }
+.drag-chip.placed {
+  background: var(--blue-soft);
+  border-color: var(--blue);
+}
+.drag-empty-hint {
+  font-size: 11.5px; color: var(--ink-faint); font-style: italic;
+  align-self: center; width: 100%; text-align: center; padding: 8px 0;
+}
+
+/* ── EXTENDED WRITING SECTION ── */
+.writing-section-intro {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 20px;
+  color: white;
+}
+.writing-section-intro h3 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.1rem; margin-bottom: 8px;
+}
+.writing-section-intro p {
+  font-size: 13.5px; line-height: 1.65; color: #a0c4e8;
+}
+.writing-checklist {
+  background: var(--gold-soft);
+  border: 1px solid #e8c840;
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+}
+.writing-checklist h4 {
+  font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; font-weight: 600;
+  color: var(--gold); margin-bottom: 10px;
+}
+.checklist-items { display: flex; flex-direction: column; gap: 6px; }
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  font-size: 13px; line-height: 1.5; color: var(--ink-soft);
+  cursor: pointer;
+}
+.checklist-item input[type="checkbox"] { margin-top: 2px; flex-shrink: 0; accent-color: var(--gold); }
+.checklist-item.checked { color: var(--ink-faint); text-decoration: line-through; }
+
+.writing-scenario-block {
+  background: var(--blue-soft);
+  border: 1.5px solid var(--blue-bright);
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.writing-scenario-block .scenario-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--blue); font-weight: 600; margin-bottom: 8px;
+}
+.writing-scenario-block p { font-size: 14px; line-height: 1.65; color: var(--ink); }
+.writing-scenario-block p + p { margin-top: 10px; }
+.writing-scenario-block .research-q {
+  font-family: 'Libre Baskerville', serif;
+  font-style: italic; font-weight: 700;
+  font-size: 1.05rem; color: var(--navy);
+  margin: 14px 0 10px;
+}
+.writing-task-box {
+  background: white;
+  border: 1.5px solid #1a6b6b;
+  border-radius: 10px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+.writing-task-box .task-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--teal); font-weight: 600; margin-bottom: 8px;
+}
+.writing-task-box h3 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.05rem; color: var(--navy); margin-bottom: 10px;
+}
+.writing-task-box p { font-size: 14px; line-height: 1.7; color: var(--ink); }
+.writing-task-box .task-purpose { margin-top: 12px; }
+.writing-task-box .task-purpose strong { color: var(--navy); }
+
+.writing-editor {
+  background: white;
+  border: 1.5px solid var(--cream-border);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.editor-toolbar {
+  background: var(--cream);
+  border-bottom: 1px solid var(--cream-border);
+  padding: 8px 16px;
+  display: flex; align-items: center; gap: 6px;
+}
+.editor-toolbar-btn {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer; color: var(--ink-soft);
+  transition: all 0.1s;
+  font-family: 'DM Sans', sans-serif;
+}
+.editor-toolbar-btn:hover { background: var(--cream-dark); color: var(--ink); }
+.editor-toolbar-sep {
+  width: 1px; height: 20px;
+  background: var(--cream-border);
+  margin: 0 4px;
+}
+.writing-textarea {
+  width: 100%;
+  min-height: 340px;
+  border: none; outline: none; resize: none;
+  font-family: 'Libre Baskerville', serif;
+  font-size: 15px; line-height: 1.8;
+  color: var(--ink);
+  padding: 20px 24px;
+  background: white;
+}
+.writing-textarea::placeholder { color: var(--ink-faint); }
+.word-count-bar {
+  background: var(--cream);
+  border-top: 1px solid var(--cream-border);
+  padding: 8px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.word-count-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: var(--ink-faint);
+}
+.word-count-hint { font-size: 11px; color: var(--ink-faint); font-style: italic; }
+
+/* ── SUBMIT ZONE ── */
+.submit-zone {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-top: 32px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.submit-zone h3 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.2rem; color: var(--navy); margin-bottom: 8px;
+}
+.submit-zone p {
+  font-size: 13.5px; color: var(--ink-soft); margin-bottom: 20px; line-height: 1.6;
+}
+.submit-btn-row {
+  display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;
+}
+.btn-submit-final {
+  background: var(--navy);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 15px 36px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+.btn-submit-final:hover { background: var(--blue); }
+.btn-submit-final:disabled { background: #a0a8b0; cursor: not-allowed; }
+.btn-save-draft {
+  background: transparent;
+  color: var(--blue);
+  border: 1.5px solid var(--blue);
+  border-radius: 10px;
+  padding: 15px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-save-draft:hover { background: var(--blue-soft); }
+
+.submit-status {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--ink-faint);
+  min-height: 20px;
+}
+.submit-status.error { color: var(--red); }
+.submit-status.success { color: var(--green); }
+
+/* ── RESULTS SCREEN ── */
+#screen-results {
+  background: var(--cream);
+  min-height: 100vh;
+  padding: 0;
+}
+
+.results-header {
+  background: var(--navy);
+  color: white;
+  padding: 32px 40px;
+  border-bottom: 3px solid var(--blue);
+}
+.results-header .eyebrow {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  color: #7ab0e8; font-family: 'DM Mono', monospace; font-weight: 600;
+  margin-bottom: 8px;
+}
+.results-header h1 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.6rem; font-weight: 700; color: var(--cream);
+  margin-bottom: 4px;
+}
+.results-header .student-line {
+  font-size: 13px; color: #a0c4e8;
+}
+
+.results-main { max-width: 900px; margin: 0 auto; padding: 36px 24px 60px; }
+
+.score-hero {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 14px;
+  padding: 36px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 28px;
+  position: relative; overflow: hidden;
+}
+.score-hero::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, var(--blue) 0%, var(--blue-bright) 100%);
+}
+.score-circle {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: var(--navy);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 4px 20px rgba(15,42,74,0.3);
+}
+.score-circle .score-num {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 2.2rem; font-weight: 700; color: white;
+  line-height: 1;
+}
+.score-circle .score-denom {
+  font-size: 12px; color: #7ab0e8;
+  font-family: 'DM Mono', monospace;
+}
+.achievement-badge {
+  display: inline-block;
+  padding: 6px 20px;
+  border-radius: 20px;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 1px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+  margin-bottom: 10px;
+}
+.ach-beginning { background: var(--red-soft); color: var(--red); }
+.ach-developing { background: var(--orange-soft); color: var(--orange); }
+.ach-proficient { background: var(--green-soft); color: var(--green); }
+.ach-distinguished { background: var(--gold-soft); color: var(--gold); }
+.score-hero p { font-size: 14px; color: var(--ink-soft); }
+
+.results-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+  margin-bottom: 24px;
+}
+@media (max-width: 660px) { .results-grid { grid-template-columns: 1fr; } }
+
+.results-card {
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+.results-card.full-width { grid-column: 1 / -1; }
+.results-card-label {
+  font-size: 10px; letter-spacing: 3px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; font-weight: 600;
+  color: var(--blue); margin-bottom: 14px;
+}
+
+/* Domain breakdown */
+.domain-row {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px;
+}
+.domain-row:last-child { margin-bottom: 0; }
+.domain-name { font-size: 13px; font-weight: 500; color: var(--ink); min-width: 120px; }
+.domain-bar-wrap { flex: 1; height: 8px; background: var(--cream-dark); border-radius: 10px; overflow: hidden; }
+.domain-bar-fill { height: 100%; background: var(--blue); border-radius: 10px; transition: width 1s ease; }
+.domain-score-label { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--ink-soft); min-width: 40px; text-align: right; }
+
+/* AI Feedback */
+.ai-feedback-loading {
+  text-align: center;
+  padding: 32px;
+  color: var(--ink-faint);
+  font-size: 14px;
+}
+.ai-spinner {
+  width: 32px; height: 32px;
+  border: 3px solid var(--cream-border);
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 12px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.feedback-section { margin-bottom: 20px; }
+.feedback-section:last-child { margin-bottom: 0; }
+.feedback-section-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  font-family: 'DM Mono', monospace; font-weight: 600;
+  margin-bottom: 8px;
+}
+.feedback-section-label.strengths { color: var(--green); }
+.feedback-section-label.next-steps { color: var(--orange); }
+.feedback-section-label.overall { color: var(--blue); }
+.feedback-section-label.teacher { color: var(--vocab-flag); }
+.feedback-text {
+  font-size: 14px; line-height: 1.7; color: var(--ink);
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.trait-scores-row {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
+  margin-bottom: 16px;
+}
+.trait-score-box {
+  background: var(--cream);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+.trait-score-box .trait-num {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.5rem; font-weight: 700; color: var(--navy);
+}
+.trait-score-box .trait-denom {
+  font-size: 11px; color: var(--ink-faint);
+  font-family: 'DM Mono', monospace;
+}
+.trait-score-box .trait-label {
+  font-size: 11px; color: var(--ink-soft);
+  margin-top: 4px; line-height: 1.3;
+}
+
+/* Vocab flags summary */
+.vocab-flags-list { display: flex; flex-direction: column; gap: 8px; }
+.vocab-flag-row {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px; color: var(--ink);
+  background: var(--vocab-soft);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+.vocab-flag-row .flag-icon { color: var(--vocab-flag); }
+
+.no-flags {
+  font-size: 13.5px; color: var(--ink-faint); font-style: italic;
+  text-align: center; padding: 16px;
+}
+
+/* Submission confirmation */
+.submission-confirm {
+  background: var(--green-soft);
+  border: 1px solid #80c880;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 13px; color: var(--green);
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(15,42,74,0.7);
+  z-index: 1000;
+  align-items: center; justify-content: center;
+}
+.loading-overlay.active { display: flex; }
+.loading-box {
+  background: white;
+  border-radius: 14px;
+  padding: 40px 48px;
+  text-align: center;
+  max-width: 360px;
+  width: 90%;
+}
+.loading-box h3 {
+  font-family: 'Libre Baskerville', serif;
+  font-size: 1.1rem; color: var(--navy);
+  margin-bottom: 8px;
+}
+.loading-box p { font-size: 13px; color: var(--ink-soft); }
+.loading-dots {
+  font-size: 24px; color: var(--blue);
+  letter-spacing: 6px;
+  animation: dotPulse 1.4s ease-in-out infinite;
+  display: block; margin: 16px 0;
+}
+@keyframes dotPulse { 0%,80%,100%{opacity:0.3} 40%{opacity:1} }
+
+/* Save banner */
+.save-banner {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--navy);
+  color: white;
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 13px;
+  display: flex; align-items: center; gap: 10px;
+  box-shadow: var(--shadow-lg);
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 500;
+}
+.save-banner.show { opacity: 1; transform: translateY(0); }
+.save-banner .banner-icon { font-size: 16px; }
+
+/* Scrollback nav */
+.question-nav {
+  position: fixed;
+  bottom: 24px; left: 24px;
+  background: white;
+  border: 1px solid var(--cream-border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 12px; color: var(--ink-soft);
+  box-shadow: var(--shadow);
+  display: none;
+}
+
+/* Utility */
+.mt-24 { margin-top: 24px; }
+.text-center { text-align: center; }
+
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-box">
+    <span class="loading-dots">• • •</span>
+    <h3 id="loadingTitle">Submitting your work...</h3>
+    <p id="loadingMsg">Please wait while we save your responses and generate AI writing feedback.</p>
+  </div>
+</div>
+
+<!-- SAVE BANNER -->
+<div class="save-banner" id="saveBanner">
+  <span class="banner-icon">💾</span>
+  <span id="saveBannerMsg">Progress saved. Resume anytime.</span>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 1: REGISTRATION                      -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen active" id="screen-register">
+  <div class="register-card">
+    <div class="register-logo">
+      <div class="register-logo-badge">📖</div>
+      <div class="register-logo-text">
+        <span class="eyebrow">McIntosh County Schools</span>
+        <span class="brand">Lit & Comp II Practice</span>
+      </div>
+    </div>
+    <h2>Before You Begin</h2>
+    <p class="subtitle">This simulation mirrors the Georgia Milestones Lit & Comp II assessment. Enter your information to get started.</p>
+
+    <div class="form-group">
+      <label for="studentName">Your Full Name</label>
+      <input type="text" id="studentName" placeholder="First Last" autocomplete="name" />
+    </div>
+    <div class="form-group">
+      <label for="studentBlock">Class Block</label>
+      <select id="studentBlock">
+        <option value="">-- Select your block --</option>
+        <option value="1">Block 1</option>
+        <option value="2">Block 2</option>
+        <option value="3">Block 3</option>
+        <option value="4">Block 4</option>
+      </select>
+    </div>
+
+    <button class="btn-start" onclick="startSim()">Begin Simulation →</button>
+
+    <div class="register-info">
+      <strong>What to expect:</strong>
+      Selected response · Multi-select · Drag-and-drop · Extended writing task · ~50–60 min · AI writing feedback upon submission
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 2: SIMULATION                        -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="screen-sim">
+  <header class="sim-header">
+    <div class="sim-header-top">
+      <div class="sim-header-left">
+        <div>
+          <div class="sim-brand">Lit & Comp II · Georgia Milestones Practice</div>
+          <div class="sim-sub">McIntosh County Schools · 2025–2026</div>
+        </div>
+        <div class="sim-student-pill" id="simStudentPill">Student</div>
+      </div>
+      <div class="sim-timer-save">
+        <div class="timer-display" id="timerDisplay">00:00</div>
+        <button class="btn-save-later" onclick="saveProgress()">💾 Save &amp; Resume Later</button>
+      </div>
+    </div>
+    <div class="sim-progress-bar-wrap">
+      <div class="sim-progress-track"><div class="sim-progress-fill" id="progressFill"></div></div>
+      <div class="sim-progress-label" id="progressLabel">0 / 20 answered</div>
+    </div>
+  </header>
+
+  <div class="sim-main" id="simMain">
+    <!-- Panels injected by JS -->
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SCREEN 3: RESULTS                           -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="screen" id="screen-results">
+  <div class="results-header">
+    <div class="eyebrow">Georgia Milestones Practice · Lit &amp; Comp II</div>
+    <h1>Your Simulation Results</h1>
+    <div class="student-line" id="resultsStudentLine">Loading...</div>
+  </div>
+
+  <div class="results-main">
+    <!-- Score hero -->
+    <div class="score-hero">
+      <div class="score-circle">
+        <div class="score-num" id="heroScore">--</div>
+        <div class="score-denom" id="heroDenom">/ --</div>
+      </div>
+      <div class="achievement-badge" id="achievementBadge">Loading...</div>
+      <p id="achievementDesc">Calculating your achievement level...</p>
+    </div>
+
+    <div class="results-grid">
+      <!-- Domain breakdown -->
+      <div class="results-card">
+        <div class="results-card-label">Domain Breakdown</div>
+        <div id="domainBreakdown">Loading...</div>
+      </div>
+
+      <!-- Vocabulary flags -->
+      <div class="results-card">
+        <div class="results-card-label">🚩 Vocabulary Flags</div>
+        <div id="vocabFlagsSummary">Loading...</div>
+      </div>
+
+      <!-- Trait scores -->
+      <div class="results-card">
+        <div class="results-card-label">Writing Rubric — Trait Scores</div>
+        <div class="trait-scores-row" id="traitScoresRow">
+          <div class="trait-score-box">
+            <div class="trait-num" id="trait1Score">--</div>
+            <div class="trait-denom">/3</div>
+            <div class="trait-label">Purpose &amp; Organization</div>
+          </div>
+          <div class="trait-score-box">
+            <div class="trait-num" id="trait2Score">--</div>
+            <div class="trait-denom">/3</div>
+            <div class="trait-label">Evidence &amp; Elaboration</div>
+          </div>
+          <div class="trait-score-box">
+            <div class="trait-num" id="trait3Score">--</div>
+            <div class="trait-denom">/2</div>
+            <div class="trait-label">Language &amp; Conventions</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--ink-faint);font-style:italic;">Scores generated by AI based on your extended response.</p>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="results-card">
+        <div class="results-card-label">Quick Stats</div>
+        <div id="quickStats">Loading...</div>
+      </div>
+
+      <!-- AI Feedback full width -->
+      <div class="results-card full-width">
+        <div class="results-card-label">AI Writing Feedback</div>
+        <div id="aiFeedbackArea">
+          <div class="ai-feedback-loading">
+            <div class="ai-spinner"></div>
+            Generating personalized feedback on your extended writing...
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="submissionConfirm"></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// CONFIG
+// ═══════════════════════════════════════
+const WORKER_URL = 'https://anthropic-proxy.arosenbaum.workers.dev/';
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbxUE7ojoEQBrk8heiJ6ur0Md6EajTia8zqcuJYHUdYg5yPtc26MfVBzeE31Fj1YE912/exec';
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let studentName = '';
+let studentBlock = '';
+let timerInterval = null;
+let elapsedSeconds = 0;
+let answers = {};        // questionId -> answer
+let vocabFlags = {};     // questionId -> true/false
+let dragStates = {};     // questionId -> {zone1:[], zone2:[]}
+let writingText = '';
+
+// ═══════════════════════════════════════
+// QUESTION DATA
+// ═══════════════════════════════════════
+const QUESTIONS = [
+
+  // ── PASSAGE 1 (used by Q1–Q5): "The Fury of the Sea"
+  {
+    id: 'p1',
+    type: 'passage',
+    label: 'PASSAGE 1 — Read the poem below. Answer questions 1–5.',
+    title: 'The Fury of the Sea',
+    meta: 'by Hana Reyes (contemporary poet)',
+    paragraphs: [
+      'The sea is not a mirror—it is a mouth,\nopen and relentless, swallowing the light.',
+      'Each wave a sentence never finished,\na thought the shore refuses to complete.',
+      'Below the surface, pressure makes its laws:\nsilence is the only constitution here.',
+      'The fishermen who vanished left no note,\nno word of where the current carries men\nwho learn too late the sea\'s theology—\nthat mercy is a myth the drowned invent.',
+      'And yet the children run along the edge,\ntheir laughter bright as foam, as brief,\nas certain of returning as the tide\nthat takes and takes and calls it giving back.',
+    ]
+  },
+
+  {
+    id: 'q1',
+    passage: 'p1',
+    type: 'selected',
+    stem: 'In lines 1–2, the poet uses the metaphor of the sea as "a mouth" primarily to emphasize which of the following?',
+    dok: 2,
+    standard: '10.T.T.1',
+    domain: 'techniques',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'The sea\'s role as a source of food for coastal communities' },
+      { letter: 'B', text: 'The sea\'s consuming, unstoppable nature and its power over human life' },
+      { letter: 'C', text: 'The beauty of the ocean when viewed from a distance at sunset' },
+      { letter: 'D', text: 'The way ocean sounds resemble human speech patterns' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q2',
+    passage: 'p1',
+    type: 'selected',
+    stem: 'Which statement best describes the effect of the phrase "silence is the only constitution here" (line 6)?',
+    dok: 3,
+    standard: '10.T.T.2',
+    domain: 'techniques',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'It argues that governments should model their laws after natural forces' },
+      { letter: 'B', text: 'It creates irony by applying a political term to a place governed entirely by physical force, not human law' },
+      { letter: 'C', text: 'It suggests the poet is making a direct critique of democratic institutions' },
+      { letter: 'D', text: 'It implies that deep-sea creatures have developed their own social order' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q3',
+    passage: 'p1',
+    type: 'multiselect',
+    stem: 'Select <strong>two</strong> literary techniques the poet uses in the final stanza (lines 10–14) and explain how they contribute to the poem\'s central tension.',
+    dok: 3,
+    standard: '10.T.T.1',
+    domain: 'techniques',
+    points: 2,
+    selectCount: 2,
+    options: [
+      { letter: 'A', text: 'Juxtaposition of childlike innocence against the sea\'s established danger' },
+      { letter: 'B', text: 'Extended metaphor comparing the tide to a generous parent' },
+      { letter: 'C', text: 'Simile linking children\'s laughter to the transience of foam' },
+      { letter: 'D', text: 'Allusion to classical mythology about sea gods' },
+      { letter: 'E', text: 'Irony in the phrase "calls it giving back" after documenting the sea\'s violence' },
+    ],
+    correct: ['A', 'C', 'E'] // any 2 of these 3 accepted
+  },
+
+  {
+    id: 'q4',
+    passage: 'p1',
+    type: 'selected',
+    stem: 'How does the structure of the poem—five distinct stanzas—contribute to its overall meaning?',
+    dok: 3,
+    standard: '10.T.SS.1',
+    domain: 'structure',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'Each stanza introduces a new character who interacts with the sea differently' },
+      { letter: 'B', text: 'The stanzas move from mythological time to present day, creating a historical survey' },
+      { letter: 'C', text: 'The stanzas build from abstract description to human consequence to ironic renewal, enacting the cycle the poem describes' },
+      { letter: 'D', text: 'The five stanzas correspond to the five stages of grief, creating a psychological arc' },
+    ],
+    correct: 'C'
+  },
+
+  {
+    id: 'q5',
+    passage: 'p1',
+    type: 'selected',
+    stem: 'The word "theology" in line 9 is used to suggest that the sea\'s behavior is—',
+    dok: 2,
+    standard: '10.L.V.3',
+    domain: 'language',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'subject to scientific measurement and analysis' },
+      { letter: 'B', text: 'treated by those who depend on it as an article of faith rather than reason' },
+      { letter: 'C', text: 'directly compared to formal religious institutions' },
+      { letter: 'D', text: 'unpredictable in ways that undermine all human belief systems' },
+    ],
+    correct: 'B'
+  },
+
+  // ── PASSAGE 2 (Q6–Q10): Two texts on historical context / argument
+  {
+    id: 'p2',
+    type: 'passage',
+    label: 'PASSAGE 2 — Read the following two texts. Answer questions 6–10.',
+    title: 'TEXT A: The Cost of Spectacle',
+    meta: 'Adapted from a political commentary, 2023',
+    paragraphs: [
+      'Professional sports stadiums have long occupied a peculiar position in civic budgeting debates. Municipal governments, eager to retain or attract franchise teams, frequently authorize public subsidies that economists argue rarely deliver the promised returns. Studies from independent research institutions consistently find that stadium construction generates short-term construction employment but does not produce the sustained economic growth that proponents advertise.',
+      'The fundamental problem is a misalignment of incentives. Franchise owners capture the revenue—ticket sales, broadcast rights, naming deals—while taxpayers absorb the infrastructure costs. This arrangement inverts the basic logic of public investment, in which shared sacrifice yields shared benefit. When a city\'s convention center or hospital system is underfunded while a stadium gleams downtown, residents are entitled to ask who exactly the public budget serves.',
+      'Proponents argue that stadiums generate intangible civic pride and tourism. These claims are difficult to quantify, which is precisely why they survive scrutiny. Pride cannot be audited. Tourism, however, can—and the data suggest that sports tourism is largely self-contained, with fans traveling to games but rarely extending their stays to explore local businesses in meaningful numbers.',
+    ]
+  },
+  {
+    id: 'p2b',
+    type: 'passage',
+    label: null,
+    title: 'TEXT B: Stadiums and the Social Contract',
+    meta: 'Adapted from an urban planning journal, 2022',
+    paragraphs: [
+      'Critics of stadium public funding often treat economic return as the only legitimate measure of public investment. This is a category error. Public libraries, parks, and arts centers are funded precisely because their value exceeds what markets can capture. A stadium that anchors a neighborhood, draws visitors to local restaurants, and gives a community a shared identity may generate social returns that spreadsheets cannot record.',
+      'The question is not whether stadiums produce positive economic externalities in every case—they do not—but whether communities, acting through their democratic institutions, have the right to prioritize certain civic investments over others. When voters approve stadium referendums, as they often do, the debate about whether the investment is "worth it" shifts. The will of the electorate is itself a legitimate form of valuation.',
+      'Furthermore, the comparison between stadium subsidies and underfunded public services presents a false dilemma. Municipal budgets are not zero-sum in the short term; bond financing allows capital investments to be spread across decades. The same logic that funds schools and transit infrastructure can legitimately extend to civic gathering spaces—including stadiums.',
+    ]
+  },
+
+  {
+    id: 'q6',
+    passage: 'p2',
+    type: 'selected',
+    stem: 'Both authors agree that stadium public funding debates involve which of the following?',
+    dok: 2,
+    standard: '10.T.RA.1',
+    domain: 'research',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'A tension between measurable economic outcomes and less quantifiable social or civic values' },
+      { letter: 'B', text: 'Evidence that voter referendums consistently reject stadium proposals' },
+      { letter: 'C', text: 'Agreement that bond financing resolves ethical concerns about public subsidies' },
+      { letter: 'D', text: 'The conclusion that franchise owners bear responsibility for infrastructure costs' },
+    ],
+    correct: 'A'
+  },
+
+  {
+    id: 'q7',
+    passage: 'p2',
+    type: 'selected',
+    stem: 'In Text A, the author\'s argument is primarily undermined if which of the following is true?',
+    dok: 3,
+    standard: '10.T.T.4',
+    domain: 'techniques',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'Independent economic studies have found that stadium construction creates no temporary jobs' },
+      { letter: 'B', text: 'Communities consistently report high satisfaction and quality-of-life improvements in neighborhoods with new stadiums' },
+      { letter: 'C', text: 'Franchise owners in several cities have voluntarily contributed to public infrastructure costs' },
+      { letter: 'D', text: 'Tourism rates in stadium cities are lower than in comparable cities without stadiums' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q8',
+    passage: 'p2',
+    type: 'multiselect',
+    stem: 'Select <strong>two</strong> rhetorical strategies Text B uses to counter Text A\'s argument.',
+    dok: 3,
+    standard: '10.T.SS.2',
+    domain: 'structure',
+    points: 2,
+    selectCount: 2,
+    options: [
+      { letter: 'A', text: 'Redefines the terms of the debate by arguing that economic return is not the only valid measure' },
+      { letter: 'B', text: 'Provides specific statistical data that directly contradicts Text A\'s economic claims' },
+      { letter: 'C', text: 'Appeals to democratic legitimacy by arguing that voter approval changes the ethical calculation' },
+      { letter: 'D', text: 'Uses personal anecdote to establish emotional credibility with the reader' },
+      { letter: 'E', text: 'Claims Text A\'s author has a financial conflict of interest' },
+    ],
+    correct: ['A', 'C']
+  },
+
+  {
+    id: 'q9',
+    passage: 'p2',
+    type: 'selected',
+    stem: 'Text A and Text B differ most significantly in their treatment of which factual claim?',
+    dok: 3,
+    standard: '10.T.RA.2',
+    domain: 'research',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'Whether franchise owners profit from stadium arrangements' },
+      { letter: 'B', text: 'Whether municipal budgets can be considered zero-sum constraints' },
+      { letter: 'C', text: 'Whether professional sports teams generate broadcast revenue' },
+      { letter: 'D', text: 'Whether stadium construction has ever been funded without public money' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q10',
+    passage: 'p2',
+    type: 'selected',
+    stem: 'The phrase "category error" in Text B (paragraph 1) most likely means the author believes critics of stadium funding—',
+    dok: 2,
+    standard: '10.L.V.1',
+    domain: 'language',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'are applying the wrong kind of logic to a question that belongs to a different domain of reasoning' },
+      { letter: 'B', text: 'have made arithmetic mistakes in their calculations of economic return' },
+      { letter: 'C', text: 'are unfamiliar with the history of public works financing in American cities' },
+      { letter: 'D', text: 'have confused the roles of municipal and federal government' },
+    ],
+    correct: 'A'
+  },
+
+  // ── SECTION 3: Drag-and-drop + isolated SR (Q11–Q15)
+  {
+    id: 'q11',
+    type: 'dragdrop',
+    stem: 'A student is analyzing how an author\'s historical and disciplinary context shapes perspective. Drag each statement to the correct category: <strong>Fact</strong> or <strong>Interpretation</strong>.',
+    dok: 3,
+    standard: '10.T.C.2',
+    domain: 'context',
+    points: 2,
+    zone1Label: 'FACT',
+    zone2Label: 'INTERPRETATION',
+    chips: [
+      { id: 'dc1', text: 'Text A was written in 2023.' },
+      { id: 'dc2', text: 'Text A\'s author views the franchise-taxpayer arrangement as unjust.' },
+      { id: 'dc3', text: 'Text B references voter referendums as evidence.' },
+      { id: 'dc4', text: 'Text B considers democratic approval a form of legitimate valuation.' },
+      { id: 'dc5', text: 'Both texts discuss public funding of sports infrastructure.' },
+      { id: 'dc6', text: 'Text A prioritizes economic data over civic identity as a measure of value.' },
+    ],
+    correctZone1: ['dc1', 'dc3', 'dc5'],
+    correctZone2: ['dc2', 'dc4', 'dc6']
+  },
+
+  {
+    id: 'q12',
+    type: 'selected',
+    stem: 'Which sentence best explains how an author\'s disciplinary background (economics vs. urban planning) might influence how they construct an argument about stadium funding?',
+    dok: 3,
+    standard: '10.T.C.1',
+    domain: 'context',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'Authors from different disciplines will always reach opposite conclusions about public spending' },
+      { letter: 'B', text: 'Disciplinary training shapes which evidence is prioritized, which questions are considered valid, and what constitutes a convincing warrant for a claim' },
+      { letter: 'C', text: 'Urban planners are more qualified than economists to assess the value of public infrastructure' },
+      { letter: 'D', text: 'Disciplinary background has no effect on argument construction when data is available' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q13',
+    type: 'selected',
+    stem: 'A student writes: "The authors disagree about whether stadiums are economically beneficial." Which revision most accurately reflects the nature of their disagreement at the level of Proficient thinking?',
+    dok: 3,
+    standard: '10.T.RA.2',
+    domain: 'research',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'The authors disagree about whether taxpayers should vote on budget decisions' },
+      { letter: 'B', text: 'The authors disagree not merely about economic outcomes but about which framework of value—economic return vs. democratic civic priority—should govern the debate' },
+      { letter: 'C', text: 'The authors disagree about the accuracy of tourism statistics in stadium cities' },
+      { letter: 'D', text: 'The authors disagree because one is a journalist and the other is an academic' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q14',
+    type: 'selected',
+    stem: 'Which of the following sentence structures best demonstrates the use of a subordinate clause to clarify a complex causal relationship?',
+    dok: 2,
+    standard: '10.L.GC.2',
+    domain: 'language',
+    points: 1,
+    options: [
+      { letter: 'A', text: '"Stadiums cost money. Taxpayers are unhappy."' },
+      { letter: 'B', text: '"Because municipal budgets reflect community priorities, stadium funding reveals what a city values most."' },
+      { letter: 'C', text: '"Stadium funding: a debate with many perspectives."' },
+      { letter: 'D', text: '"Either stadiums are funded publicly or they are funded privately."' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q15',
+    type: 'dragdrop',
+    stem: 'Arrange the following elements of argumentative structure in the order they should appear in a well-organized essay. Drag from the bank into the <strong>Correct Sequence</strong> zone in order from first to last.',
+    dok: 2,
+    standard: '10.T.SS.1',
+    domain: 'structure',
+    points: 2,
+    zone1Label: 'CORRECT SEQUENCE (drag in order)',
+    zone2Label: 'WORD BANK',
+    chips: [
+      { id: 'seq1', text: 'Hook + context establishing the issue' },
+      { id: 'seq2', text: 'Clearly stated claim/thesis' },
+      { id: 'seq3', text: 'First reason supported by evidence' },
+      { id: 'seq4', text: 'Counterclaim acknowledgment and rebuttal' },
+      { id: 'seq5', text: 'Conclusion restating claim in light of evidence' },
+    ],
+    correctZone1: ['seq1', 'seq2', 'seq3', 'seq4', 'seq5'],
+    correctZone2: []
+  },
+
+  // ── SECTION 4: Periods & Movements + Language (Q16–Q19)
+  {
+    id: 'q16',
+    type: 'selected',
+    stem: 'A Romanticism-era author writing about nature would most likely differ from a Realism-era author writing about the same topic in which of the following ways?',
+    dok: 2,
+    standard: '10.T.PM.1',
+    domain: 'periods',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'The Romantic author would use more complex vocabulary to describe natural settings' },
+      { letter: 'B', text: 'The Romantic author would portray nature as spiritually transcendent, while the Realist author would depict it as an indifferent, material environment' },
+      { letter: 'C', text: 'The Realist author would describe nature in idealized terms to contrast with industrialization' },
+      { letter: 'D', text: 'The Romantic author would focus on scientific classification of natural phenomena' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q17',
+    type: 'selected',
+    stem: 'Which sentence contains an error in parallel structure?',
+    dok: 2,
+    standard: '10.L.GC.2',
+    domain: 'language',
+    points: 1,
+    options: [
+      { letter: 'A', text: '"She argued clearly, wrote persuasively, and listened carefully."' },
+      { letter: 'B', text: '"The study found that stadiums increase tourism, generate short-term jobs, and that they boost civic pride."' },
+      { letter: 'C', text: '"To analyze, to evaluate, and to synthesize are the core skills of literary study."' },
+      { letter: 'D', text: '"Both the mayor and the council approved the proposal."' },
+    ],
+    correct: 'B'
+  },
+
+  {
+    id: 'q18',
+    type: 'multiselect',
+    stem: 'Select <strong>two</strong> words from the options below that share a similar denotative meaning but carry significantly different connotations in the context of public policy debate.',
+    dok: 3,
+    standard: '10.L.V.3',
+    domain: 'language',
+    points: 2,
+    selectCount: 2,
+    options: [
+      { letter: 'A', text: '"subsidy" and "investment"' },
+      { letter: 'B', text: '"stadium" and "arena"' },
+      { letter: 'C', text: '"taxpayer" and "citizen"' },
+      { letter: 'D', text: '"construction" and "building"' },
+      { letter: 'E', text: '"frugal" and "cheap"' },
+    ],
+    correct: ['A', 'C', 'E'] // A and E are the primary targets; C also defensible
+  },
+
+  {
+    id: 'q19',
+    type: 'selected',
+    stem: 'A student wants to use the Greek root <em>-graph-</em> (meaning "write" or "record") to determine the meaning of an unfamiliar word in an economics article. Which word would this morphological knowledge most directly help decode?',
+    dok: 2,
+    standard: '10.L.V.2',
+    domain: 'language',
+    points: 1,
+    options: [
+      { letter: 'A', text: 'demography' },
+      { letter: 'B', text: 'demographic' },
+      { letter: 'C', text: 'infographic' },
+      { letter: 'D', text: 'gravel' },
+    ],
+    correct: 'C'
+  },
+
+  // ── EXTENDED WRITING TASK (Q20)
+  {
+    id: 'q20',
+    type: 'writing',
+    dok: 4,
+    standard: '10.T.RA.1 / 10.T.SS.2',
+    domain: 'writing',
+    points: 8,
+    scenario: 'In economics class, students are completing research projects focused on the importance of different aspects of state and local budgets. Your teacher mentions that professional sports stadiums are often funded at least partly by public funds. You choose to focus your research on the impact of stadiums on the economy, and you develop the following research question:',
+    researchQuestion: 'Should cities prioritize the funding of professional sports stadiums?',
+    taskIntro: 'Consider what you have learned about the impact of stadiums on the economy from reviewing the two source texts above (Text A and Text B). You will now construct an original text using your own ideas to answer the research question for the specific purpose and audience shown below.',
+    purpose: 'to argue whether cities should or should not prioritize the funding of professional sports stadiums and support your argument',
+    audience: 'economics classmates and teacher',
+    checklist: [
+      'I have a clearly stated claim that answers the research question.',
+      'I provided at least two reasons that support my claim.',
+      'I used evidence from the source texts (Text A and Text B) to support my reasons.',
+      'I included at least one rhetorical device or appeal (logos, ethos, pathos) to strengthen my argument.',
+      'I acknowledged and rebutted the opposing viewpoint.',
+      'I used transitions to connect ideas between paragraphs.',
+      'I have a conclusion that restates my claim in light of the evidence.',
+      'I checked my grammar, sentence structure, and mechanics.',
+    ]
+  }
+];
+
+// Domain display names
+const DOMAIN_LABELS = {
+  techniques: 'Techniques (10.T.T)',
+  structure: 'Structure & Style (10.T.SS)',
+  context: 'Context (10.T.C)',
+  research: 'Research & Analysis (10.T.RA)',
+  language: 'Language (10.L)',
+  periods: 'Periods & Movements (10.T.PM)',
+  writing: 'Extended Writing Task'
+};
+
+// Domain max points (for the SR/drag section only)
+const DOMAIN_MAX = {
+  techniques: 7,
+  structure: 5,
+  context: 3,
+  research: 3,
+  language: 5,
+  periods: 1
+};
+
+// ═══════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════
+function startTimer() {
+  timerInterval = setInterval(() => {
+    elapsedSeconds++;
+    const m = String(Math.floor(elapsedSeconds / 60)).padStart(2, '0');
+    const s = String(elapsedSeconds % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = m + ':' + s;
+  }, 1000);
+}
+
+// ═══════════════════════════════════════
+// REGISTRATION
+// ═══════════════════════════════════════
+function startSim() {
+  const nameEl = document.getElementById('studentName');
+  const blockEl = document.getElementById('studentBlock');
+  studentName = nameEl.value.trim();
+  studentBlock = blockEl.value;
+
+  if (!studentName) { alert('Please enter your name before starting.'); nameEl.focus(); return; }
+  if (!studentBlock) { alert('Please select your class block.'); blockEl.focus(); return; }
+
+  // Check for saved progress
+  const saved = localStorage.getItem('litcomp2_save_' + studentName);
+  if (saved) {
+    try {
+      const state = JSON.parse(saved);
+      if (confirm('Found saved progress from a previous session. Resume where you left off?')) {
+        answers = state.answers || {};
+        vocabFlags = state.vocabFlags || {};
+        dragStates = state.dragStates || {};
+        elapsedSeconds = state.elapsed || 0;
+      }
+    } catch(e) {}
+  }
+
+  document.getElementById('simStudentPill').textContent = studentName + ' · Block ' + studentBlock;
+  showScreen('screen-sim');
+  renderSimulation();
+  startTimer();
+}
+
+// ═══════════════════════════════════════
+// SCREEN MANAGEMENT
+// ═══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ═══════════════════════════════════════
+// RENDER SIMULATION — ONE QUESTION AT A TIME
+// ═══════════════════════════════════════
+
+// Build list of "steps": each step is either a question index or 'writing'
+let simSteps = [];      // array of question ids in order
+let currentStep = 0;    // index into simSteps
+
+function buildSteps() {
+  simSteps = [];
+  QUESTIONS.forEach(q => {
+    if (q.type === 'passage') return;
+    simSteps.push(q.id);
+  });
+}
+
+// Map passage id to the questions that use it
+function getPassageForQuestion(qId) {
+  const q = QUESTIONS.find(q => q.id === qId);
+  if (!q || !q.passage) return null;
+  return QUESTIONS.find(p => p.id === q.passage);
+}
+
+// For passage 2, we need both p2 and p2b
+function getPassagesForQuestion(qId) {
+  const q = QUESTIONS.find(q => q.id === qId);
+  if (!q) return [];
+  if (q.passage) {
+    const p = QUESTIONS.find(p => p.id === q.passage);
+    // If p2, also include p2b
+    if (q.passage === 'p2') {
+      const p2b = QUESTIONS.find(p => p.id === 'p2b');
+      return p2b ? [p, p2b] : [p];
+    }
+    return p ? [p] : [];
+  }
+  return [];
+}
+
+function renderSimulation() {
+  buildSteps();
+  renderStep(currentStep);
+  updateProgress();
+}
+
+function renderStep(stepIdx) {
+  currentStep = stepIdx;
+  const qId = simSteps[stepIdx];
+  const q = QUESTIONS.find(q => q.id === qId);
+  const main = document.getElementById('simMain');
+
+  if (q.type === 'writing') {
+    // Two-panel layout with source texts on the left
+    main.className = 'sim-main';
+    main.innerHTML = '';
+
+    // Left: both source texts
+    const leftPanel = document.createElement('div');
+    leftPanel.className = 'passage-panel';
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'passage-panel-label';
+    labelDiv.textContent = 'SOURCE TEXTS — Text A & Text B';
+    leftPanel.appendChild(labelDiv);
+    const p2 = QUESTIONS.find(p => p.id === 'p2');
+    const p2b = QUESTIONS.find(p => p.id === 'p2b');
+    if (p2) leftPanel.appendChild(makePassageBlock(p2));
+    if (p2b) leftPanel.appendChild(makePassageBlock(p2b));
+
+    // Right: writing task + nav
+    const rightPanel = document.createElement('div');
+    rightPanel.className = 'question-panel';
+    const inner = document.createElement('div');
+    inner.className = 'question-panel-inner';
+    inner.appendChild(makeWritingTask(q));
+    rightPanel.appendChild(inner);
+    rightPanel.appendChild(makeWritingNav(stepIdx));
+
+    main.appendChild(leftPanel);
+    main.appendChild(rightPanel);
+    leftPanel.scrollTop = 0;
+    rightPanel.scrollTop = 0;
+    updateProgress();
+    return;
+  }
+
+  // Two-panel layout
+  main.className = 'sim-main';
+  main.innerHTML = '';
+
+  // Left: passage panel
+  const leftPanel = document.createElement('div');
+  leftPanel.className = 'passage-panel';
+
+  const passages = getPassagesForQuestion(qId);
+  if (passages.length > 0) {
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'passage-panel-label';
+    labelDiv.textContent = passages.length > 1 ? 'SOURCE TEXTS' : 'PASSAGE';
+    leftPanel.appendChild(labelDiv);
+    passages.forEach(p => leftPanel.appendChild(makePassageBlock(p)));
+  } else {
+    // No passage — standalone question
+    const labelDiv = document.createElement('div');
+    labelDiv.className = 'passage-panel-label';
+    labelDiv.textContent = 'SECTION 1 — INTERPRETING TEXTS';
+    leftPanel.appendChild(labelDiv);
+    const placeholder = document.createElement('div');
+    placeholder.style.cssText = 'color:var(--ink-faint);font-size:13.5px;font-style:italic;padding:20px 0;line-height:1.7;';
+    placeholder.textContent = 'This question does not reference a specific passage. Use your knowledge of 10th-grade ELA standards to answer.';
+    leftPanel.appendChild(placeholder);
+  }
+
+  // Right: question panel
+  const rightPanel = document.createElement('div');
+  rightPanel.className = 'question-panel';
+
+  const inner = document.createElement('div');
+  inner.className = 'question-panel-inner';
+  const qNum = stepIdx + 1;
+  inner.appendChild(makeQuestionCard(q, qNum));
+  rightPanel.appendChild(inner);
+
+  // Nav bar
+  rightPanel.appendChild(makeQuestionNav(stepIdx));
+
+  main.appendChild(leftPanel);
+  main.appendChild(rightPanel);
+
+  // Scroll both panels to top
+  leftPanel.scrollTop = 0;
+  rightPanel.scrollTop = 0;
+
+  updateProgress();
+}
+
+function makeQuestionNav(stepIdx) {
+  const total = simSteps.length;
+  const isLast = stepIdx === total - 1;
+  const bar = document.createElement('div');
+  bar.className = 'qnav-bar';
+
+  // Prev button
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'qnav-btn';
+  prevBtn.innerHTML = '← Previous';
+  prevBtn.disabled = stepIdx === 0;
+  prevBtn.onclick = () => renderStep(stepIdx - 1);
+
+  // Dots
+  const dots = document.createElement('div');
+  dots.className = 'qnav-dots';
+  simSteps.forEach((id, i) => {
+    const q = QUESTIONS.find(q => q.id === id);
+    const dot = document.createElement('div');
+    dot.className = 'qnav-dot';
+    if (q.type === 'writing') dot.classList.add('writing-dot');
+    if (i === stepIdx) dot.classList.add('current');
+    if (answers[id] !== undefined && (Array.isArray(answers[id]) ? answers[id].length > 0 : true)) dot.classList.add('answered');
+    if (vocabFlags[id]) dot.classList.add('flagged');
+    dot.title = q.type === 'writing' ? 'Extended Writing' : `Question ${i + 1}`;
+    dot.onclick = () => renderStep(i);
+    dots.appendChild(dot);
+  });
+
+  // Next / Submit button
+  const nextBtn = document.createElement('button');
+  nextBtn.className = 'qnav-btn primary';
+  if (isLast) {
+    nextBtn.innerHTML = 'Submit Simulation →';
+    nextBtn.onclick = () => submitSimulation();
+  } else {
+    nextBtn.innerHTML = 'Next →';
+    nextBtn.onclick = () => renderStep(stepIdx + 1);
+  }
+
+  bar.appendChild(prevBtn);
+  bar.appendChild(dots);
+  bar.appendChild(nextBtn);
+  return bar;
+}
+
+function makeWritingNav(stepIdx) {
+  const bar = document.createElement('div');
+  bar.className = 'qnav-bar';
+  bar.style.maxWidth = '1100px';
+  bar.style.margin = '0 auto';
+
+  const prevBtn = document.createElement('button');
+  prevBtn.className = 'qnav-btn';
+  prevBtn.innerHTML = '← Back to Questions';
+  prevBtn.onclick = () => renderStep(stepIdx - 1);
+
+  const dots = document.createElement('div');
+  dots.className = 'qnav-dots';
+  simSteps.forEach((id, i) => {
+    const q = QUESTIONS.find(q => q.id === id);
+    const dot = document.createElement('div');
+    dot.className = 'qnav-dot';
+    if (q.type === 'writing') dot.classList.add('writing-dot');
+    if (i === stepIdx) dot.classList.add('current');
+    if (answers[id] !== undefined && (Array.isArray(answers[id]) ? answers[id].length > 0 : true)) dot.classList.add('answered');
+    if (vocabFlags[id]) dot.classList.add('flagged');
+    dot.onclick = () => renderStep(i);
+    dots.appendChild(dot);
+  });
+
+  const submitBtn = document.createElement('button');
+  submitBtn.className = 'qnav-btn primary';
+  submitBtn.id = 'submitBtn';
+  submitBtn.innerHTML = 'Submit Simulation →';
+  submitBtn.onclick = () => submitSimulation();
+
+  bar.appendChild(prevBtn);
+  bar.appendChild(dots);
+  bar.appendChild(submitBtn);
+  return bar;
+}
+
+function makePassageBlock(item) {
+  const block = document.createElement('div');
+  block.id = 'passage-' + item.id;
+  block.style.marginBottom = '24px';
+
+  let labelHtml = item.label ? `<div class="passage-label">${item.label}</div>` : '';
+  let paragraphsHtml = item.paragraphs.map((p, i) =>
+    `<div class="para-wrap"><span class="para-num">${i + 1}</span><div class="para-text">${p.replace(/\n/g, '<br>')}</div></div>`
+  ).join('');
+
+  block.innerHTML = `
+    ${labelHtml}
+    <div class="passage-title">${item.title}</div>
+    <div class="passage-meta">${item.meta || ''}</div>
+    <div class="passage-body">${paragraphsHtml}</div>
+  `;
+  return block;
+}
+
+function makeQuestionCard(item, qNum) {
+  const card = document.createElement('div');
+  card.className = 'question-card';
+  card.id = 'card-' + item.id;
+
+  const isAnswered = answers[item.id] !== undefined && (Array.isArray(answers[item.id]) ? answers[item.id].length > 0 : true);
+  const isFlagged = vocabFlags[item.id] === true;
+  if (isAnswered) card.classList.add('answered');
+  if (isFlagged) card.classList.add('vocab-flagged');
+
+  let typeBadge = '';
+  if (item.type === 'selected') typeBadge = 'Selected Response';
+  else if (item.type === 'multiselect') typeBadge = 'Multi-Select';
+  else if (item.type === 'dragdrop') typeBadge = 'Drag & Drop';
+
+  let statusBadges = '';
+  if (isAnswered) statusBadges += `<span class="q-badge q-badge-answered">✓ Answered</span>`;
+  if (isFlagged) statusBadges += `<span class="q-badge q-badge-vocab">🚩 Vocab Flag</span>`;
+
+  let bodyHtml = '';
+  if (item.type === 'selected') bodyHtml = makeSelectedResponseBody(item);
+  else if (item.type === 'multiselect') bodyHtml = makeMultiSelectBody(item);
+  else if (item.type === 'dragdrop') bodyHtml = makeDragDropBody(item, qNum);
+
+  card.innerHTML = `
+    <div class="question-header">
+      <div class="question-meta">
+        <span class="q-num">Question ${qNum}</span>
+        <span class="q-badge q-badge-type">${typeBadge}</span>
+        <span class="q-badge q-badge-dok">DOK ${item.dok}</span>
+        <span class="q-badge q-badge-standard">${item.standard}</span>
+        ${statusBadges}
+      </div>
+      <button class="vocab-btn ${isFlagged ? 'active' : ''}" id="vocabBtn-${item.id}" onclick="toggleVocabFlag('${item.id}')">
+        <span class="flag-icon">🚩</span> ${isFlagged ? 'Flagged' : 'Flag Vocab'}
+      </button>
+    </div>
+    <div class="question-body">
+      <div class="question-stem">${item.stem}</div>
+      ${bodyHtml}
+    </div>
+  `;
+  return card;
+}
+
+function makeSelectedResponseBody(item) {
+  return `<div class="options-list" id="opts-${item.id}">` +
+    item.options.map(opt => {
+      const sel = answers[item.id] === opt.letter ? ' selected' : '';
+      return `<div class="option-item${sel}" onclick="selectOption('${item.id}','${opt.letter}',this.closest('.options-list'))">
+        <div class="option-letter">${opt.letter}</div>
+        <div class="option-text">${opt.text}</div>
+      </div>`;
+    }).join('') +
+  '</div>';
+}
+
+function makeMultiSelectBody(item) {
+  const saved = answers[item.id] || [];
+  return `<div class="multi-select-hint">Select ${item.selectCount} answers.</div>
+  <div class="options-list" id="opts-${item.id}">` +
+    item.options.map(opt => {
+      const sel = saved.includes(opt.letter) ? ' selected' : '';
+      return `<div class="option-item multi-option${sel}" onclick="toggleMultiOption('${item.id}','${opt.letter}',${item.selectCount},this.closest('.options-list'))">
+        <div class="option-letter">${opt.letter}</div>
+        <div class="option-text">${opt.text}</div>
+      </div>`;
+    }).join('') +
+  '</div>';
+}
+
+function makeDragDropBody(item, qNum) {
+  if (!dragStates[item.id]) {
+    dragStates[item.id] = { zone1: [], zone2: item.chips.map(c => c.id) };
+  }
+  const state = dragStates[item.id];
+  const chipsMap = {};
+  item.chips.forEach(c => { chipsMap[c.id] = c.text; });
+
+  const renderChip = (chipId) =>
+    `<div class="drag-chip placed" draggable="true" id="chip-${item.id}-${chipId}"
+      ondragstart="onDragStart(event,'${item.id}','${chipId}')"
+      ontouchstart="onTouchStart(event,'${item.id}','${chipId}')"
+      >${chipsMap[chipId]}</div>`;
+
+  const zone1Chips = state.zone1.map(renderChip).join('') || `<span class="drag-empty-hint">Drop here</span>`;
+  const zone2Chips = state.zone2.map(renderChip).join('') || `<span class="drag-empty-hint">All placed</span>`;
+
+  return `<div class="drag-instructions">Drag each item to the correct category. Touch users: tap to select, then tap the target zone.</div>
+  <div class="drag-zone-wrap">
+    <div>
+      <div class="drag-zone-label">${item.zone1Label}</div>
+      <div class="drag-zone" id="zone1-${item.id}"
+        ondragover="event.preventDefault()"
+        ondrop="onDrop(event,'${item.id}','zone1')"
+        onclick="onZoneTap('${item.id}','zone1')"
+        >${zone1Chips}</div>
+    </div>
+    <div>
+      <div class="drag-zone-label">${item.zone2Label}</div>
+      <div class="drag-zone" id="zone2-${item.id}"
+        ondragover="event.preventDefault()"
+        ondrop="onDrop(event,'${item.id}','zone2')"
+        onclick="onZoneTap('${item.id}','zone2')"
+        >${zone2Chips}</div>
+    </div>
+  </div>`;
+}
+
+function makeWritingTask(item) {
+  const wrapper = document.createElement('div');
+  wrapper.id = 'writing-section';
+
+  const checklistItems = item.checklist.map((c, i) =>
+    `<label class="checklist-item" id="cl-${i}">
+      <input type="checkbox" onchange="toggleChecklist(${i})"> ${c}
+    </label>`
+  ).join('');
+
+  wrapper.innerHTML = `
+    <div class="writing-section-intro">
+      <h3>Extended Writing Task · 8 Points</h3>
+      <p>You have reviewed both source texts. Now construct an original argumentative essay. Use the Writer's Checklist before submitting.</p>
+    </div>
+    <div class="writing-scenario-block">
+      <div class="scenario-label">Scenario</div>
+      <p>${item.scenario}</p>
+      <p class="research-q">${item.researchQuestion}</p>
+      <p>You have reviewed two sources on the impact of stadiums on the economy. Be sure to provide reasons for your claim, support these reasons with evidence from the sources, and include rhetorical devices and/or appeals to make the argument more compelling. Refer to the Writer's Checklist as you type and edit your text.</p>
+    </div>
+    <div class="writing-task-box">
+      <div class="task-label">Writing Task</div>
+      <h3>${item.researchQuestion}</h3>
+      <p>${item.taskIntro}</p>
+      <div class="task-purpose">
+        <p><strong>Purpose:</strong> ${item.purpose}</p>
+        <p><strong>Audience:</strong> ${item.audience}</p>
+      </div>
+    </div>
+    <div class="writing-checklist">
+      <h4>Writer's Checklist</h4>
+      <div class="checklist-items">${checklistItems}</div>
+    </div>
+    <div class="writing-editor">
+      <div class="editor-toolbar">
+        <button class="editor-toolbar-btn" onclick="document.execCommand('undo')">↩ Undo</button>
+        <button class="editor-toolbar-btn" onclick="document.execCommand('redo')">↪ Redo</button>
+        <div class="editor-toolbar-sep"></div>
+        <button class="editor-toolbar-btn" onclick="document.execCommand('bold')"><strong>B</strong></button>
+        <button class="editor-toolbar-btn" onclick="document.execCommand('italic')"><em>I</em></button>
+      </div>
+      <textarea class="writing-textarea" id="writingTextarea" placeholder="Begin writing here. Your response should be a multi-paragraph argumentative essay. Use evidence from Text A and Text B to support your claim." oninput="updateWordCount(this)">${writingText}</textarea>
+      <div class="word-count-bar">
+        <span class="word-count-label" id="wordCountLabel">0 words</span>
+        <span class="word-count-hint">Aim for 300–500 words for a complete response</span>
+      </div>
+    </div>
+  `;
+  return wrapper;
+}
+
+// ═══════════════════════════════════════
+// ANSWER INTERACTIONS
+// ═══════════════════════════════════════
+function selectOption(qId, letter, container) {
+  container.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+  event.currentTarget.classList.add('selected');
+  answers[qId] = letter;
+  updateCardStatus(qId);
+  updateProgress();
+}
+
+function toggleMultiOption(qId, letter, maxSelect, container) {
+  const el = event.currentTarget;
+  const current = answers[qId] || [];
+
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    answers[qId] = current.filter(l => l !== letter);
+  } else {
+    if (current.length >= maxSelect) {
+      // Deselect first
+      const firstSelected = container.querySelector('.option-item.selected');
+      if (firstSelected) {
+        firstSelected.classList.remove('selected');
+        const oldLetter = firstSelected.querySelector('.option-letter').textContent;
+        answers[qId] = current.filter(l => l !== oldLetter);
+      }
+    }
+    el.classList.add('selected');
+    answers[qId] = [...(answers[qId] || []), letter];
+  }
+  updateCardStatus(qId);
+  updateProgress();
+}
+
+function toggleVocabFlag(qId) {
+  vocabFlags[qId] = !vocabFlags[qId];
+  const card = document.getElementById('card-' + qId);
+  const btn = document.getElementById('vocabBtn-' + qId);
+  if (vocabFlags[qId]) {
+    card.classList.add('vocab-flagged');
+    btn.classList.add('active');
+    btn.innerHTML = '<span class="flag-icon">🚩</span> Flagged';
+  } else {
+    card.classList.remove('vocab-flagged');
+    btn.classList.remove('active');
+    btn.innerHTML = '<span class="flag-icon">🚩</span> Flag Vocab';
+  }
+  // Re-evaluate answered state
+  updateCardStatus(qId);
+}
+
+function updateCardStatus(qId) {
+  const card = document.getElementById('card-' + qId);
+  if (!card) return;
+  const isAnswered = answers[qId] !== undefined && (Array.isArray(answers[qId]) ? answers[qId].length > 0 : true);
+  const isFlagged = vocabFlags[qId] === true;
+  card.classList.toggle('answered', isAnswered);
+  card.classList.toggle('vocab-flagged', isFlagged);
+  // Refresh status badges in header
+  const meta = card.querySelector('.question-meta');
+  if (meta) {
+    meta.querySelectorAll('.q-badge-answered, .q-badge-vocab').forEach(b => b.remove());
+    if (isAnswered) meta.insertAdjacentHTML('beforeend', '<span class="q-badge q-badge-answered">✓ Answered</span>');
+    if (isFlagged) meta.insertAdjacentHTML('beforeend', '<span class="q-badge q-badge-vocab">🚩 Vocab Flag</span>');
+  }
+  // Refresh nav dots
+  updateNavDots();
+}
+
+function updateProgress() {
+  const totalQ = QUESTIONS.filter(q => q.type !== 'passage' && q.type !== 'writing').length;
+  const answered = Object.keys(answers).filter(k => {
+    const q = QUESTIONS.find(q => q.id === k);
+    return q && q.type !== 'writing';
+  }).filter(k => {
+    const v = answers[k];
+    return v !== undefined && (Array.isArray(v) ? v.length > 0 : true);
+  }).length;
+  const pct = Math.round((answered / totalQ) * 100);
+  document.getElementById('progressFill').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = answered + ' / ' + totalQ + ' answered';
+  updateNavDots();
+}
+
+function updateNavDots() {
+  document.querySelectorAll('.qnav-dot').forEach((dot, i) => {
+    if (i >= simSteps.length) return;
+    const id = simSteps[i];
+    const q = QUESTIONS.find(q => q.id === id);
+    dot.className = 'qnav-dot';
+    if (q && q.type === 'writing') dot.classList.add('writing-dot');
+    if (i === currentStep) dot.classList.add('current');
+    const ans = answers[id];
+    if (ans !== undefined && (Array.isArray(ans) ? ans.length > 0 : true)) dot.classList.add('answered');
+    if (vocabFlags[id]) dot.classList.add('flagged');
+  });
+}
+
+function toggleChecklist(idx) {
+  const label = document.getElementById('cl-' + idx);
+  if (label) label.classList.toggle('checked', label.querySelector('input').checked);
+}
+
+function updateWordCount(textarea) {
+  writingText = textarea.value;
+  const words = textarea.value.trim().split(/\s+/).filter(w => w.length > 0).length;
+  document.getElementById('wordCountLabel').textContent = words + ' word' + (words !== 1 ? 's' : '');
+}
+
+// ═══════════════════════════════════════
+// DRAG AND DROP
+// ═══════════════════════════════════════
+let draggingChip = null;
+let draggingQId = null;
+
+function onDragStart(event, qId, chipId) {
+  draggingChip = chipId;
+  draggingQId = qId;
+  event.dataTransfer.setData('text/plain', chipId + '|' + qId);
+  document.getElementById('chip-' + qId + '-' + chipId).classList.add('dragging');
+}
+
+let touchDragChip = null;
+let touchDragQId = null;
+
+function onTouchStart(event, qId, chipId) {
+  touchDragChip = chipId;
+  touchDragQId = qId;
+  document.querySelectorAll('.drag-chip').forEach(c => c.style.outline = '');
+  document.getElementById('chip-' + qId + '-' + chipId).style.outline = '2px solid var(--blue)';
+}
+
+function onZoneTap(qId, zone) {
+  if (touchDragChip && touchDragQId === qId) {
+    moveChip(qId, touchDragChip, zone);
+    document.querySelectorAll('.drag-chip').forEach(c => c.style.outline = '');
+    touchDragChip = null;
+    touchDragQId = null;
+  }
+}
+
+function onDrop(event, qId, zone) {
+  event.preventDefault();
+  const data = event.dataTransfer.getData('text/plain').split('|');
+  const chipId = data[0];
+  const fromQId = data[1];
+  if (fromQId === qId) moveChip(qId, chipId, zone);
+  draggingChip = null; draggingQId = null;
+}
+
+function moveChip(qId, chipId, targetZone) {
+  const state = dragStates[qId];
+  const q = QUESTIONS.find(q => q.id === qId);
+  if (!state || !q) return;
+
+  state.zone1 = state.zone1.filter(id => id !== chipId);
+  state.zone2 = state.zone2.filter(id => id !== chipId);
+
+  if (targetZone === 'zone1') state.zone1.push(chipId);
+  else state.zone2.push(chipId);
+
+  if (state.zone1.length > 0 || state.zone2.length > 0) {
+    answers[qId] = { zone1: [...state.zone1], zone2: [...state.zone2] };
+  }
+
+  // Re-render just the drag body inside the existing card
+  const card = document.getElementById('card-' + qId);
+  if (card) {
+    const qNum = simSteps.indexOf(qId) + 1;
+    const body = card.querySelector('.question-body');
+    const stemEl = body.querySelector('.question-stem');
+    const stemHtml = stemEl ? stemEl.outerHTML : '';
+    body.innerHTML = stemHtml + makeDragDropBody(q, qNum);
+  }
+  updateCardStatus(qId);
+  updateProgress();
+}
+
+// ═══════════════════════════════════════
+// SAVE PROGRESS
+// ═══════════════════════════════════════
+function saveProgress() {
+  writingText = document.getElementById('writingTextarea')?.value || writingText;
+  const state = {
+    studentName, studentBlock,
+    answers, vocabFlags, dragStates,
+    elapsed: elapsedSeconds,
+    writingText,
+    savedAt: new Date().toISOString()
+  };
+  localStorage.setItem('litcomp2_save_' + studentName, JSON.stringify(state));
+  showSaveBanner('Progress saved! Resume anytime before submitting.');
+}
+
+function showSaveBanner(msg) {
+  const banner = document.getElementById('saveBanner');
+  document.getElementById('saveBannerMsg').textContent = msg;
+  banner.classList.add('show');
+  setTimeout(() => banner.classList.remove('show'), 3500);
+}
+
+// ═══════════════════════════════════════
+// SCORING
+// ═══════════════════════════════════════
+function scoreAnswers() {
+  let totalCorrect = 0;
+  const domainScores = { techniques: 0, structure: 0, context: 0, research: 0, language: 0, periods: 0 };
+
+  QUESTIONS.forEach(q => {
+    if (q.type === 'passage' || q.type === 'writing') return;
+
+    if (q.type === 'selected') {
+      if (answers[q.id] === q.correct) {
+        totalCorrect += 1;
+        if (domainScores[q.domain] !== undefined) domainScores[q.domain] += 1;
+      }
+    } else if (q.type === 'multiselect') {
+      const userAns = answers[q.id] || [];
+      const correct = Array.isArray(q.correct) ? q.correct : [q.correct];
+      const pts = userAns.filter(a => correct.includes(a)).length;
+      const earned = Math.min(pts, q.points);
+      totalCorrect += earned;
+      if (domainScores[q.domain] !== undefined) domainScores[q.domain] += earned;
+    } else if (q.type === 'dragdrop') {
+      const state = dragStates[q.id];
+      if (!state) return;
+      const z1Correct = q.correctZone1 ? q.correctZone1.filter(id => state.zone1.includes(id)).length : 0;
+      const z2Correct = q.correctZone2 ? q.correctZone2.filter(id => state.zone2.includes(id)).length : 0;
+      const totalItems = (q.correctZone1 || []).length + (q.correctZone2 || []).length;
+      const earned = totalItems > 0 ? Math.round((z1Correct + z2Correct) / totalItems * q.points) : 0;
+      totalCorrect += earned;
+      if (domainScores[q.domain] !== undefined) domainScores[q.domain] += earned;
+    }
+  });
+
+  return { totalCorrect, domainScores };
+}
+
+function getAchievementLevel(score, total) {
+  const pct = score / total;
+  if (pct >= 0.85) return { label: 'Distinguished Learner', cls: 'ach-distinguished' };
+  if (pct >= 0.65) return { label: 'Proficient Learner', cls: 'ach-proficient' };
+  if (pct >= 0.40) return { label: 'Developing Learner', cls: 'ach-developing' };
+  return { label: 'Beginning Learner', cls: 'ach-beginning' };
+}
+
+// ═══════════════════════════════════════
+// SUBMIT SIMULATION
+// ═══════════════════════════════════════
+async function submitSimulation() {
+  writingText = document.getElementById('writingTextarea')?.value || writingText;
+
+  // Disable all submit buttons (there may be one in the nav bar)
+  document.querySelectorAll('#submitBtn').forEach(btn => btn.disabled = true);
+
+  clearInterval(timerInterval);
+
+  showLoading('Submitting your simulation...', 'Please wait while we score your responses and generate AI writing feedback. This may take 30–60 seconds.');
+
+  const { totalCorrect, domainScores } = scoreAnswers();
+  const srTotal = 19; // max pts on SR/drag section
+  const ach = getAchievementLevel(totalCorrect, srTotal);
+
+  const flaggedItems = Object.entries(vocabFlags)
+    .filter(([, v]) => v)
+    .map(([k]) => {
+      const q = QUESTIONS.find(q => q.id === k);
+      return q ? `Q${QUESTIONS.filter(i => i.type !== 'passage' && i.type !== 'writing').findIndex(i => i.id === k) + 1}` : k;
+    }).join(', ');
+
+  // Get AI writing feedback
+  let writingFeedback = { overall: '', strengths: '', nextSteps: '', teacherSummary: '', trait1: 0, trait2: 0, trait3: 0 };
+
+  try {
+    writingFeedback = await getAIWritingFeedback(writingText, totalCorrect, ach.label, flaggedItems);
+  } catch(e) {
+    writingFeedback.overall = 'AI feedback unavailable. Please try again later.';
+  }
+
+  const writingScore = writingFeedback.trait1 + writingFeedback.trait2 + writingFeedback.trait3;
+  const grandTotal = totalCorrect + writingScore;
+  const grandMax = srTotal + 8;
+
+  // Submit to Google Sheets
+  const payload = {
+    studentName,
+    block: studentBlock,
+    overallScore: grandTotal + '/' + grandMax,
+    correctItems: totalCorrect,
+    totalItems: srTotal,
+    achievementLevel: ach.label,
+    contextScore: domainScores.context + '/' + DOMAIN_MAX.context,
+    techniquesScore: domainScores.techniques + '/' + DOMAIN_MAX.techniques,
+    structureStyleScore: domainScores.structure + '/' + DOMAIN_MAX.structure,
+    languageScore: domainScores.language + '/' + DOMAIN_MAX.language,
+    researchAnalysisScore: domainScores.research + '/' + DOMAIN_MAX.research,
+    vocabularyFlags: flaggedItems || 'None',
+    overallFeedback: writingFeedback.overall,
+    strengths: writingFeedback.strengths,
+    nextSteps: writingFeedback.nextSteps,
+    teacherSummary: writingFeedback.teacherSummary,
+    trait1Score: writingFeedback.trait1,
+    trait2Score: writingFeedback.trait2,
+    trait3Score: writingFeedback.trait3
+  };
+
+  try {
+    await fetch(SHEETS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+  } catch(e) {
+    console.warn('Sheets submission error:', e);
+  }
+
+  hideLoading();
+
+  // Clear saved progress
+  localStorage.removeItem('litcomp2_save_' + studentName);
+
+  showResults({ totalCorrect, domainScores, ach, writingFeedback, writingScore, grandTotal, grandMax, flaggedItems, srTotal });
+}
+
+// ═══════════════════════════════════════
+// AI WRITING FEEDBACK
+// ═══════════════════════════════════════
+async function getAIWritingFeedback(essay, srScore, achLevel, flaggedItems) {
+  const systemPrompt = `You are an expert Georgia Milestones ELA rater for Literature & Composition II (10th grade). You evaluate student extended writing responses using the official 8-point, 3-trait rubric:
+
+TRAIT 1 — Purpose & Organization (0-3 points):
+3: Coherent, purposeful, clearly stated claim, cohesive structure, appropriate style and tone
+2: Reasonably coherent, adequate structure, mostly appropriate style
+1: Incomplete, weak organization, inconsistent style
+0: Disorganized, no discernible purpose
+
+TRAIT 2 — Evidence & Elaboration (0-3 points):
+3: Thorough, relevant evidence from sources, effective elaboration, precise word choice
+2: Adequate evidence, some elaboration, generally precise word choice
+1: Minimal evidence, limited elaboration, imprecise word choice
+0: No evidence or elaboration
+
+TRAIT 3 — Language Usage & Conventions (0-2 points):
+2: Varied syntax, mostly correct verb tense/mood, parallel structure, few errors
+1: Some syntax variety, some errors, partial command
+0: Little or no command of conventions, frequent errors
+
+The student is a 10th grader (Grade 10, Lit & Comp II). Calibrate accordingly.
+Return ONLY valid JSON, no markdown, no preamble.`;
+
+  const userPrompt = `Score this 10th-grade argumentative essay response to the prompt: "Should cities prioritize the funding of professional sports stadiums?"
+
+ESSAY:
+${essay || '[No response provided]'}
+
+Student context: Selected-response score was ${srScore}/19 (${achLevel} level). Vocabulary barriers flagged on: ${flaggedItems || 'none'}.
+
+Return this exact JSON:
+{
+  "trait1Score": <0-3>,
+  "trait2Score": <0-3>,
+  "trait3Score": <0-2>,
+  "overallFeedback": "<2-3 sentence overall assessment of this essay at 10th grade Lit & Comp II level>",
+  "strengths": "<2-3 specific, evidence-based strengths from the essay text itself>",
+  "nextSteps": "<2-3 specific, actionable improvements tied to the rubric — name the specific trait and what to do>",
+  "teacherSummary": "<1-2 sentence teacher-facing summary: achievement level context, what to target in instruction, whether vocabulary barriers may be a factor>"
+}`;
+
+  const response = await fetch(WORKER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userPrompt }]
+    })
+  });
+
+  if (!response.ok) throw new Error('API error ' + response.status);
+  const data = await response.json();
+  const raw = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join('');
+  const parsed = JSON.parse(raw.replace(/```json|```/g, '').trim());
+
+  return {
+    trait1: parseInt(parsed.trait1Score) || 0,
+    trait2: parseInt(parsed.trait2Score) || 0,
+    trait3: parseInt(parsed.trait3Score) || 0,
+    overall: parsed.overallFeedback || '',
+    strengths: parsed.strengths || '',
+    nextSteps: parsed.nextSteps || '',
+    teacherSummary: parsed.teacherSummary || ''
+  };
+}
+
+// ═══════════════════════════════════════
+// SHOW RESULTS
+// ═══════════════════════════════════════
+function showResults({ totalCorrect, domainScores, ach, writingFeedback, writingScore, grandTotal, grandMax, flaggedItems, srTotal }) {
+  showScreen('screen-results');
+
+  document.getElementById('resultsStudentLine').textContent =
+    studentName + ' · Block ' + studentBlock + ' · Submitted ' + new Date().toLocaleString();
+
+  document.getElementById('heroScore').textContent = grandTotal;
+  document.getElementById('heroDenom').textContent = '/ ' + grandMax;
+
+  const achBadge = document.getElementById('achievementBadge');
+  achBadge.textContent = ach.label;
+  achBadge.className = 'achievement-badge ' + ach.cls;
+
+  const achDescs = {
+    'Distinguished Learner': 'Exceptional performance. Demonstrates mastery of Lit & Comp II standards at a level that exceeds grade-level expectations.',
+    'Proficient Learner': 'Meets grade-level expectations for Lit & Comp II. Demonstrates solid command of key standards.',
+    'Developing Learner': 'Approaching proficiency. Shows partial understanding of key standards with consistent areas for growth.',
+    'Beginning Learner': 'Below grade-level expectations. Significant gaps in core Lit & Comp II standards need targeted instructional support.'
+  };
+  document.getElementById('achievementDesc').textContent = achDescs[ach.label] || '';
+
+  // Domain breakdown
+  const domDiv = document.getElementById('domainBreakdown');
+  const domains = ['techniques', 'structure', 'context', 'research', 'language', 'periods'];
+  domDiv.innerHTML = domains.map(d => {
+    const earned = domainScores[d] || 0;
+    const max = DOMAIN_MAX[d];
+    const pct = Math.round((earned / max) * 100);
+    return `<div class="domain-row">
+      <div class="domain-name">${DOMAIN_LABELS[d].split('(')[0].trim()}</div>
+      <div class="domain-bar-wrap"><div class="domain-bar-fill" style="width:${pct}%"></div></div>
+      <div class="domain-score-label">${earned}/${max}</div>
+    </div>`;
+  }).join('');
+
+  // Trait scores
+  document.getElementById('trait1Score').textContent = writingFeedback.trait1;
+  document.getElementById('trait2Score').textContent = writingFeedback.trait2;
+  document.getElementById('trait3Score').textContent = writingFeedback.trait3;
+
+  // Quick stats
+  const statsDiv = document.getElementById('quickStats');
+  statsDiv.innerHTML = `
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--cream-border);">
+        <span style="color:var(--ink-soft)">Selected Response Score</span>
+        <strong>${totalCorrect} / ${srTotal}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--cream-border);">
+        <span style="color:var(--ink-soft)">Extended Writing Score</span>
+        <strong>${writingScore} / 8</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;border-bottom:1px solid var(--cream-border);">
+        <span style="color:var(--ink-soft)">Total Score</span>
+        <strong>${grandTotal} / ${grandMax}</strong>
+      </div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:8px 0;">
+        <span style="color:var(--ink-soft)">Vocab Items Flagged</span>
+        <strong>${Object.values(vocabFlags).filter(Boolean).length}</strong>
+      </div>
+    </div>`;
+
+  // Vocab flags
+  const vocabDiv = document.getElementById('vocabFlagsSummary');
+  const flaggedList = QUESTIONS
+    .filter(q => q.type !== 'passage' && q.type !== 'writing' && vocabFlags[q.id])
+    .map((q, i) => {
+      const qNum = QUESTIONS.filter(i => i.type !== 'passage' && i.type !== 'writing').findIndex(i => i.id === q.id) + 1;
+      return `<div class="vocab-flag-row"><span class="flag-icon">🚩</span> Question ${qNum} · ${q.standard}</div>`;
+    });
+
+  vocabDiv.innerHTML = flaggedList.length
+    ? `<div class="vocab-flags-list">${flaggedList.join('')}</div>`
+    : `<div class="no-flags">No vocabulary barriers flagged. Great work!</div>`;
+
+  // AI feedback
+  renderAIFeedback(writingFeedback);
+
+  // Submission confirmation
+  document.getElementById('submissionConfirm').innerHTML =
+    `<div class="submission-confirm">✓ Results submitted to your teacher's Google Sheet.</div>`;
+}
+
+function renderAIFeedback(fb) {
+  const area = document.getElementById('aiFeedbackArea');
+  if (!fb || (!fb.overall && !fb.strengths)) {
+    area.innerHTML = '<p style="color:var(--ink-faint);font-style:italic;font-size:13px;">AI feedback unavailable for this submission.</p>';
+    return;
+  }
+
+  area.innerHTML = `
+    <div class="trait-scores-row" style="margin-bottom:20px;">
+      <div class="trait-score-box">
+        <div class="trait-num">${fb.trait1}</div>
+        <div class="trait-denom">/3</div>
+        <div class="trait-label">Purpose & Org.</div>
+      </div>
+      <div class="trait-score-box">
+        <div class="trait-num">${fb.trait2}</div>
+        <div class="trait-denom">/3</div>
+        <div class="trait-label">Evidence & Elab.</div>
+      </div>
+      <div class="trait-score-box">
+        <div class="trait-num">${fb.trait3}</div>
+        <div class="trait-denom">/2</div>
+        <div class="trait-label">Lang. & Conventions</div>
+      </div>
+    </div>
+    ${fb.overall ? `
+    <div class="feedback-section">
+      <div class="feedback-section-label overall">Overall Assessment</div>
+      <div class="feedback-text">${fb.overall}</div>
+    </div>` : ''}
+    ${fb.strengths ? `
+    <div class="feedback-section">
+      <div class="feedback-section-label strengths">Strengths</div>
+      <div class="feedback-text">${fb.strengths}</div>
+    </div>` : ''}
+    ${fb.nextSteps ? `
+    <div class="feedback-section">
+      <div class="feedback-section-label next-steps">Next Steps</div>
+      <div class="feedback-text">${fb.nextSteps}</div>
+    </div>` : ''}
+    ${fb.teacherSummary ? `
+    <div class="feedback-section">
+      <div class="feedback-section-label teacher">Teacher Summary</div>
+      <div class="feedback-text" style="background:var(--vocab-soft);border-left:3px solid var(--vocab-flag);padding-left:16px;">${fb.teacherSummary}</div>
+    </div>` : ''}
+  `;
+}
+
+// ═══════════════════════════════════════
+// LOADING OVERLAY
+// ═══════════════════════════════════════
+function showLoading(title, msg) {
+  document.getElementById('loadingTitle').textContent = title;
+  document.getElementById('loadingMsg').textContent = msg;
+  document.getElementById('loadingOverlay').classList.add('active');
+}
+function hideLoading() {
+  document.getElementById('loadingOverlay').classList.remove('active');
+}
+
+// ═══════════════════════════════════════
+// RESTORE saved state if any on page load
+// ═══════════════════════════════════════
+window.addEventListener('beforeunload', () => {
+  if (document.getElementById('screen-sim').classList.contains('active')) {
+    saveProgress();
+  }
+});
+</script>
+</body>
+</html>
